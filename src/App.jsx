@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Plus, GripVertical, MoreVertical, Pencil, Trash2, X, Bell, Download } from 'lucide-react';
 import './index.css';
 
-const STORAGE_KEY = 'monthly-bills-v8-full-ui';
-const LAST_NOTIFY_KEY = 'monthly-bills-v8-last-notify';
+const STORAGE_KEY = 'monthly-bills-v9-full-height-full-features';
+const LAST_NOTIFY_KEY = 'monthly-bills-v9-last-notify';
 
 const initialBills = [
   { id: 1, title: 'Kuryente', amount: 600, dueDate: '2026-03-26', status: 'Unpaid' },
@@ -41,10 +41,14 @@ function getDerivedStatus(bill) {
 
 function statusClass(status) {
   switch (status) {
-    case 'Paid': return 'pill pill-paid';
-    case 'Due': return 'pill pill-due';
-    case 'Late': return 'pill pill-late';
-    default: return 'pill pill-unpaid';
+    case 'Paid':
+      return 'pill pill-paid';
+    case 'Due':
+      return 'pill pill-due';
+    case 'Late':
+      return 'pill pill-late';
+    default:
+      return 'pill pill-unpaid';
   }
 }
 
@@ -69,7 +73,12 @@ function useClickOutside(ref, onClose) {
 }
 
 function BillModal({ open, onClose, onSave, editingBill }) {
-  const [form, setForm] = useState({ title: '', amount: '', dueDate: '', status: 'Unpaid' });
+  const [form, setForm] = useState({
+    title: '',
+    amount: '',
+    dueDate: '',
+    status: 'Unpaid',
+  });
 
   useEffect(() => {
     if (editingBill) {
@@ -80,7 +89,12 @@ function BillModal({ open, onClose, onSave, editingBill }) {
         status: editingBill.status || 'Unpaid',
       });
     } else {
-      setForm({ title: '', amount: '', dueDate: '', status: 'Unpaid' });
+      setForm({
+        title: '',
+        amount: '',
+        dueDate: '',
+        status: 'Unpaid',
+      });
     }
   }, [editingBill, open]);
 
@@ -110,23 +124,43 @@ function BillModal({ open, onClose, onSave, editingBill }) {
         <form className="modal-form" onSubmit={handleSubmit}>
           <label>
             <span>Bill Name</span>
-            <input value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} placeholder="e.g. Kuryente" />
+            <input
+              value={form.title}
+              onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+              placeholder="e.g. Kuryente"
+            />
           </label>
+
           <label>
             <span>Amount</span>
-            <input type="number" value={form.amount} onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))} placeholder="e.g. 600" />
+            <input
+              type="number"
+              value={form.amount}
+              onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))}
+              placeholder="e.g. 600"
+            />
           </label>
+
           <label>
             <span>Due Date</span>
-            <input type="date" value={form.dueDate} onChange={(e) => setForm((p) => ({ ...p, dueDate: e.target.value }))} />
+            <input
+              type="date"
+              value={form.dueDate}
+              onChange={(e) => setForm((p) => ({ ...p, dueDate: e.target.value }))}
+            />
           </label>
+
           <label>
             <span>Status</span>
-            <select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}>
+            <select
+              value={form.status}
+              onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
+            >
               <option>Unpaid</option>
               <option>Paid</option>
             </select>
           </label>
+
           <div className="modal-actions">
             <button className="secondary-btn" type="button" onClick={onClose}>Cancel</button>
             <button className="primary-btn" type="submit">{editingBill ? 'Save Changes' : 'Add Bill'}</button>
@@ -147,6 +181,7 @@ function RowMenu({ onEdit, onDelete }) {
       <button className="icon-btn" onClick={() => setOpen((v) => !v)} type="button" aria-label="More options">
         <MoreVertical size={18} />
       </button>
+
       {open && (
         <div className="menu-card">
           <button onClick={() => { onEdit(); setOpen(false); }} type="button">
@@ -163,16 +198,36 @@ function RowMenu({ onEdit, onDelete }) {
   );
 }
 
-function BillRow({ bill, onEdit, onDelete, onToggleStatus, onDragStart, onDragEnter, onDrop, onDragEnd, isDragging, isDropTarget }) {
+function BillRow({
+  bill,
+  onEdit,
+  onDelete,
+  onToggleStatus,
+  onDragStart,
+  onDragEnter,
+  onDrop,
+  onDragEnd,
+  isDragging,
+  isDropTarget,
+}) {
   const derived = getDerivedStatus(bill);
   const isPaid = bill.status === 'Paid';
   const canDrag = !isPaid;
 
   return (
     <div
-      className={['bill-row', isPaid ? 'bill-row-paid' : '', isDragging ? 'bill-row-dragging' : '', isDropTarget ? 'bill-row-target' : ''].join(' ')}
-      onDragOver={(e) => { if (!isPaid) e.preventDefault(); }}
-      onDragEnter={() => { if (!isPaid) onDragEnter(bill.id); }}
+      className={[
+        'bill-row',
+        isPaid ? 'bill-row-paid' : '',
+        isDragging ? 'bill-row-dragging' : '',
+        isDropTarget ? 'bill-row-target' : '',
+      ].join(' ')}
+      onDragOver={(e) => {
+        if (!isPaid) e.preventDefault();
+      }}
+      onDragEnter={() => {
+        if (!isPaid) onDragEnter(bill.id);
+      }}
       onDrop={(e) => {
         if (!isPaid) {
           e.preventDefault();
@@ -194,7 +249,12 @@ function BillRow({ bill, onEdit, onDelete, onToggleStatus, onDragStart, onDragEn
       <div className="amount-col">{peso(bill.amount)}</div>
 
       <div className="status-col">
-        <button type="button" className={statusClass(derived)} onClick={() => onToggleStatus(bill.id)} title="Tap to toggle paid/unpaid">
+        <button
+          type="button"
+          className={statusClass(derived)}
+          onClick={() => onToggleStatus(bill.id)}
+          title="Tap to toggle paid/unpaid"
+        >
           {derived}
         </button>
       </div>
@@ -222,7 +282,9 @@ export default function App() {
   const [dragOverId, setDragOverId] = useState(null);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [installAvailable, setInstallAvailable] = useState(false);
-  const [notificationPermission, setNotificationPermission] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'default');
+  const [notificationPermission, setNotificationPermission] = useState(
+    typeof Notification !== 'undefined' ? Notification.permission : 'default'
+  );
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(bills));
@@ -272,8 +334,12 @@ export default function App() {
     if (lastKey === todayKey) return;
 
     const messages = [];
-    if (alerts.late.length) messages.push(`${alerts.late.length} overdue bill${alerts.late.length > 1 ? 's' : ''} need attention.`);
-    if (alerts.dueSoon.length) messages.push(`${alerts.dueSoon.length} bill${alerts.dueSoon.length > 1 ? 's are' : ' is'} due soon.`);
+    if (alerts.late.length) {
+      messages.push(`${alerts.late.length} overdue bill${alerts.late.length > 1 ? 's' : ''} need attention.`);
+    }
+    if (alerts.dueSoon.length) {
+      messages.push(`${alerts.dueSoon.length} bill${alerts.dueSoon.length > 1 ? 's are' : ' is'} due soon.`);
+    }
 
     if (messages.length) {
       new Notification('Monthly Bills Reminder', {
@@ -322,7 +388,9 @@ export default function App() {
 
   function saveBill(data) {
     if (editingBill) {
-      setBills((prev) => sortBills(prev.map((b) => (b.id === editingBill.id ? { ...b, ...data } : b))));
+      setBills((prev) =>
+        sortBills(prev.map((b) => (b.id === editingBill.id ? { ...b, ...data } : b)))
+      );
     } else {
       const newBill = { id: Date.now(), ...data };
       setBills((prev) => sortBills([...prev, newBill]));
@@ -336,7 +404,13 @@ export default function App() {
   }
 
   function toggleStatus(id) {
-    setBills((prev) => sortBills(prev.map((b) => (b.id === id ? { ...b, status: b.status === 'Paid' ? 'Unpaid' : 'Paid' } : b))));
+    setBills((prev) =>
+      sortBills(
+        prev.map((b) =>
+          b.id === id ? { ...b, status: b.status === 'Paid' ? 'Unpaid' : 'Paid' } : b
+        )
+      )
+    );
   }
 
   function handleDragStart(id) {
@@ -424,22 +498,24 @@ export default function App() {
           </div>
         </div>
 
-        <div className="list-card">
-          {bills.map((bill) => (
-            <BillRow
-              key={bill.id}
-              bill={bill}
-              onEdit={openEdit}
-              onDelete={deleteBill}
-              onToggleStatus={toggleStatus}
-              onDragStart={handleDragStart}
-              onDragEnter={handleDragEnter}
-              onDrop={handleDrop}
-              onDragEnd={handleDragEnd}
-              isDragging={draggedId === bill.id}
-              isDropTarget={dragOverId === bill.id && draggedId && draggedId !== bill.id}
-            />
-          ))}
+        <div className="list-wrap">
+          <div className="list-card">
+            {bills.map((bill) => (
+              <BillRow
+                key={bill.id}
+                bill={bill}
+                onEdit={openEdit}
+                onDelete={deleteBill}
+                onToggleStatus={toggleStatus}
+                onDragStart={handleDragStart}
+                onDragEnter={handleDragEnter}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
+                isDragging={draggedId === bill.id}
+                isDropTarget={dragOverId === bill.id && draggedId && draggedId !== bill.id}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="footer-section">
