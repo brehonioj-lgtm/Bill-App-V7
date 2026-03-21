@@ -1,9 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Plus, GripVertical, MoreVertical, Pencil, Trash2, X, Bell, Download } from 'lucide-react';
+import { Plus, GripVertical, MoreVertical, Pencil, Trash2, X, Bell, Download, Cloud, CloudOff } from 'lucide-react';
 import './index.css';
+import {
+  cloudAvailable,
+  signInCloud,
+  subscribeToBills,
+  saveBillsToCloud,
+} from './firebase';
 
-const STORAGE_KEY = 'monthly-bills-v10-sticky-layout';
-const LAST_NOTIFY_KEY = 'monthly-bills-v10-last-notify';
+const STORAGE_KEY = 'monthly-bills-v11-cloud-sync';
+const LAST_NOTIFY_KEY = 'monthly-bills-v11-last-notify';
 
 const initialBills = [
   { id: 1, title: 'Kuryente', amount: 600, dueDate: '2026-03-26', status: 'Unpaid' },
@@ -265,6 +271,9 @@ export default function App() {
   const [notificationPermission, setNotificationPermission] = useState(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
+  const [cloudStatus, setCloudStatus] = useState(cloudAvailable ? 'Connecting...' : 'Local only');
+  const [cloudReady, setCloudReady] = useState(false);
+  const cloudLoadedRef = useRef(false);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(bills));
@@ -294,6 +303,44 @@ export default function App() {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
   }, []);
+
+  useEffect(() => {
+    let unsub = null;
+    async function initCloud() {
+      if (!cloudAvailable) return;
+
+      try {
+        const uid = await signInCloud();
+        setCloudStatus('Cloud synced');
+        setCloudReady(true);
+        unsub = subscribeToBills(uid, (remoteBills) => {
+          if (Array.isArray(remoteBills) && remoteBills.length) {
+            setBills(sortBills(remoteBills));
+          }
+          cloudLoadedRef.current = true;
+        });
+      } catch (err) {
+        setCloudStatus('Cloud error');
+        setCloudReady(false);
+        cloudLoadedRef.current = true;
+      }
+    }
+    initCloud();
+
+    if (!cloudAvailable) {
+      cloudLoadedRef.current = true;
+    }
+
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!cloudReady) return;
+    if (!cloudLoadedRef.current) return;
+    saveBillsToCloud(bills).catch(() => setCloudStatus('Cloud error'));
+  }, [bills, cloudReady]);
 
   const alerts = useMemo(() => {
     const unpaid = bills.filter((b) => b.status !== 'Paid');
@@ -455,6 +502,10 @@ export default function App() {
                 Install App
               </button>
             ) : null}
+            <div className="mini-chip" title={cloudAvailable ? 'Cloud sync ready after Firebase setup' : 'Needs Firebase config'}>
+              {cloudAvailable ? <Cloud size={15} /> : <CloudOff size={15} />}
+              {cloudStatus}
+            </div>
           </div>
 
           {(alerts.late.length || alerts.dueSoon.length) ? (

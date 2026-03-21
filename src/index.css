@@ -76,7 +76,8 @@ button, input, select { font: inherit; }
   flex-wrap: wrap;
 }
 
-.mini-btn {
+.mini-btn,
+.mini-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -87,6 +88,10 @@ button, input, select { font: inherit; }
   padding: 7px 11px;
   font-size: 12px;
   font-weight: 700;
+}
+
+.mini-chip {
+  cursor: default;
 }
 
 .alert-strip {
