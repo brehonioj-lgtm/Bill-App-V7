@@ -1,9 +1,3 @@
-# Monthly Bills V7 PWA
+# Monthly Bills V8 Full UI
 
-Added:
-- installable PWA
-- service worker
-- manifest
-- due soon / overdue notifications
-- enable alerts button
-- install app button (when supported)
+Same full UI as the polished version, with a compact footer.
