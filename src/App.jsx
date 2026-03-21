@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Plus, GripVertical, MoreVertical, Pencil, Trash2, X, Bell, Download } from 'lucide-react';
 import './index.css';
 
-const STORAGE_KEY = 'monthly-bills-v9-full-height-full-features';
-const LAST_NOTIFY_KEY = 'monthly-bills-v9-last-notify';
+const STORAGE_KEY = 'monthly-bills-v10-sticky-layout';
+const LAST_NOTIFY_KEY = 'monthly-bills-v10-last-notify';
 
 const initialBills = [
   { id: 1, title: 'Kuryente', amount: 600, dueDate: '2026-03-26', status: 'Unpaid' },
@@ -41,14 +41,10 @@ function getDerivedStatus(bill) {
 
 function statusClass(status) {
   switch (status) {
-    case 'Paid':
-      return 'pill pill-paid';
-    case 'Due':
-      return 'pill pill-due';
-    case 'Late':
-      return 'pill pill-late';
-    default:
-      return 'pill pill-unpaid';
+    case 'Paid': return 'pill pill-paid';
+    case 'Due': return 'pill pill-due';
+    case 'Late': return 'pill pill-late';
+    default: return 'pill pill-unpaid';
   }
 }
 
@@ -124,38 +120,22 @@ function BillModal({ open, onClose, onSave, editingBill }) {
         <form className="modal-form" onSubmit={handleSubmit}>
           <label>
             <span>Bill Name</span>
-            <input
-              value={form.title}
-              onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-              placeholder="e.g. Kuryente"
-            />
+            <input value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} placeholder="e.g. Kuryente" />
           </label>
 
           <label>
             <span>Amount</span>
-            <input
-              type="number"
-              value={form.amount}
-              onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))}
-              placeholder="e.g. 600"
-            />
+            <input type="number" value={form.amount} onChange={(e) => setForm((p) => ({ ...p, amount: e.target.value }))} placeholder="e.g. 600" />
           </label>
 
           <label>
             <span>Due Date</span>
-            <input
-              type="date"
-              value={form.dueDate}
-              onChange={(e) => setForm((p) => ({ ...p, dueDate: e.target.value }))}
-            />
+            <input type="date" value={form.dueDate} onChange={(e) => setForm((p) => ({ ...p, dueDate: e.target.value }))} />
           </label>
 
           <label>
             <span>Status</span>
-            <select
-              value={form.status}
-              onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
-            >
+            <select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}>
               <option>Unpaid</option>
               <option>Paid</option>
             </select>
@@ -457,7 +437,7 @@ export default function App() {
         <div className="top-section">
           <div className="top-actions">
             <button className="add-btn" type="button" onClick={openAdd} aria-label="Add bill">
-              <Plus size={24} />
+              <Plus size={22} />
             </button>
           </div>
 
