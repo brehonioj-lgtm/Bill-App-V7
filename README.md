@@ -1,3 +1,11 @@
-# Monthly Bills V8 Full UI
+# Monthly Bills V9 Full Height + Full Features
 
-Same full UI as the polished version, with a compact footer.
+Includes:
+- full polished UI
+- full-height layout
+- compact footer
+- status pill tap-to-toggle
+- drag reorder for unpaid rows
+- paid rows darker and auto-bottom
+- PWA install
+- notifications
