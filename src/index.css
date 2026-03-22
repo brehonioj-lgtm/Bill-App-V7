@@ -184,10 +184,10 @@ button, input, select { font: inherit; }
 .bill-row-paid .amount-col { color: #455168; }
 
 .bill-row-dragging {
-  opacity: 0.65;
+  opacity: 0.9;
   transform: scale(0.985);
-  box-shadow: inset 0 0 0 1px #7aa4ff;
-  background: #f3f7ff;
+  box-shadow: inset 0 0 0 1px #6e95e8;
+  background: #dfe9ff;
 }
 
 .bill-row-target {
