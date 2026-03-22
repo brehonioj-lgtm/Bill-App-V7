@@ -1,4 +1,4 @@
-const CACHE_NAME = 'monthly-bills-cache-v1';
+const CACHE_NAME = 'monthly-bills-cache-v2';
 const URLS_TO_CACHE = [
   '/',
   '/manifest.webmanifest',
