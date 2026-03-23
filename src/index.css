@@ -167,10 +167,10 @@ button, input, select { font: inherit; }
 }
 
 .bill-row {
-  display: flex;
+  display: grid;
   grid-template-columns: 20px minmax(0, 1fr) 74px 64px 22px;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   padding: 10px 12px;
   border-bottom: 1px solid #e8ebf3;
   background: #ffffff;
